@@ -30,36 +30,36 @@ void print_elapsed_time();
 void multiply_matrices_IJK_serial()
 {
 	
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMNS; j++) {
-				float sum = 0.0;
-				for (int k = 0; k < COLUMNS; k++) {
-					sum = sum + matrix_a[i][k] * matrix_b[k][j];
-				}
-				matrix_r[i][j] = sum;
-			}
-		}
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+            float sum = 0.0;
+            for (int k = 0; k < COLUMNS; k++) {
+                sum = sum + matrix_a[i][k] * matrix_b[k][j];
+            }
+            matrix_r[i][j] = sum;
+        }
+    }
 	
 }
 void multiply_matrices_IJK_parallel()
 {
-	#pragma omp parallel for schedule(dynamic)
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMNS; j++) {
-				float sum = 0.0;
-				for (int k = 0; k < COLUMNS; k++) {
-					sum = sum + matrix_a[i][k] * matrix_b[k][j];
-				}
-				matrix_r[i][j] = sum;
-			}
-		}
+#pragma omp parallel for schedule(dynamic)
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+            float sum = 0.0;
+            for (int k = 0; k < COLUMNS; k++) {
+                sum = sum + matrix_a[i][k] * matrix_b[k][j];
+            }
+            matrix_r[i][j] = sum;
+        }
+    }
 }
 void multiply_matrices_IKJ_affinity()
 {
 #pragma omp parallel 
 	{
 		SetThreadAffinityMask(GetCurrentThread(), 1 << omp_get_thread_num());
-	#pragma omp for schedule(dynamic)
+#pragma omp for schedule(dynamic)
 		for (int i = 0; i < ROWS; i++)
 			for (int k = 0; k < COLUMNS; k++)
 				for (int j = 0; j < COLUMNS; j++)
@@ -91,16 +91,16 @@ void multiply_matrices_IJK_prefetch( )
 {
 	
 #pragma omp parallel for schedule(dynamic)
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMNS; j++) {
-				float sum = 0.0;
-				for (int k = 0; k < COLUMNS; k++) {
-					_mm_prefetch((char*)(&matrix_b[k+5][j]), _MM_HINT_NTA);
-					sum = sum + matrix_a[i][k] * matrix_b[k][j];
-				}
-				matrix_r[i][j] = sum;
-			}
-		}
+    for (int i = 0; i < ROWS; i++) {
+        for (int j = 0; j < COLUMNS; j++) {
+            float sum = 0.0;
+            for (int k = 0; k < COLUMNS; k++) {
+                _mm_prefetch((char*)(&matrix_b[k+5][j]), _MM_HINT_NTA);
+                sum = sum + matrix_a[i][k] * matrix_b[k][j];
+            }
+            matrix_r[i][j] = sum;
+        }
+    }
 	
 
 	
@@ -116,11 +116,11 @@ void multiply_matrices_IKJ_serial( )
 
 void multiply_matrices_IKJ_parallel()
 {
-	#pragma omp parallel for schedule(dynamic)
-		for (int i = 0; i < ROWS; i++)
-			for (int k = 0; k < COLUMNS; k++)
-				for (int j = 0; j < COLUMNS; j++)
-					matrix_r[i][j] += matrix_a[i][k] * matrix_b[k][j];
+#pragma omp parallel for schedule(dynamic)
+    for (int i = 0; i < ROWS; i++)
+        for (int k = 0; k < COLUMNS; k++)
+            for (int j = 0; j < COLUMNS; j++)
+                matrix_r[i][j] += matrix_a[i][k] * matrix_b[k][j];
 
 }
 
@@ -185,7 +185,7 @@ void print_elapsed_time()
 	elapsed = (double)clock() / CLK_TCK;
 	resolution = 1.0 / CLK_TCK;
 	printf("Czas: %8.4f sec \n",
-		elapsed - start);
+           elapsed - start);
 
 
 }
